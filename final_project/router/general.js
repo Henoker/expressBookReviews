@@ -83,23 +83,18 @@ public_users.get("/review/:isbn", function (req, res) {
 
 // Registration
 public_users.post("/register", (req, res) => {
-  const username = req.query.username;
-  const password = req.query.password;
-
-  if (username && password) {
-    if (!isValid(username)) {
-      users.push({ username: username, password: password });
-
-      return res
-        .status(200)
-        .json({ message: "User is successfully registred!" });
-    } else {
-      return res.status(404).json({ message: "User already exists!" });
+    const { username, password } = req.body; // Use req.body for capturing the data
+  
+    if (username && password) {
+      if (!isValid(username)) {
+        users.push({ username: username, password: password });
+  
+        return res.status(200).json({ message: "User is successfully registered!" });
+      } else {
+        return res.status(409).json({ message: "User already exists!" }); // 409 for conflict
+      }
     }
-  }
-  return res
-    .status(404)
-    .json({ message: "Error: something went wrong, please try again later." });
-});
+    return res.status(400).json({ message: "Error: something went wrong, please try again later." }); // 400 for bad request
+  });
 
 module.exports.general = public_users;
